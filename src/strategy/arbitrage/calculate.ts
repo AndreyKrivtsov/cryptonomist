@@ -1,15 +1,15 @@
-import { Quote } from '../config/types.config'
+import { PairPrice } from '../../config/types'
 import { graphFabric } from './graphFabric'
 import { Node, Nodes } from './Graph'
 import { graphPrint } from './graphPrint'
-import { tokens } from '../markets/flatQube/config/tokens.config'
+import { tokens } from '../../markets/flatQube/config/tokens.config'
 
 export type CalculateResult = {
     path: string[],
     profit: number
 }
 
-export function calculateTest(quotes: Quote[], tokenList = tokens): CalculateResult[] | null {
+export function calculate(quotes: PairPrice[]): CalculateResult[] | null {
     const tokenGraph = graphFabric(quotes)
     const graph = tokenGraph.getGraph()
     const paths = dfs(graph, graph[Object.keys(graph)[1]])
@@ -47,8 +47,8 @@ export function calculateTest(quotes: Quote[], tokenList = tokens): CalculateRes
     return error? null : result
 }
 
-function getCost(quotes: Quote[], nodeA: Node, nodeB: Node) {
-    let pair: Quote | undefined
+function getCost(quotes: PairPrice[], nodeA: Node, nodeB: Node) {
+    let pair: PairPrice | undefined
     let reverse = false
     quotes.forEach(quote => {
         if (
@@ -101,12 +101,6 @@ function dfs(graph: Nodes, startVertex: Node) {
                 // console.log(`[${getToken(vertex.id)}] Идем в соседа: ${getToken(neighborKey)}`)
                 const nextVertex = graph[neighborKey]
                 go(nextVertex, vertex, counter + 1, path)
-                // const result = go(nextVertex, vertex, counter + 1, path)
-                // if (result) {
-                    // console.log(printPath(result))
-                    // const array = [...result]
-                    // paths.push(array)
-                // }
             })
         } else {
             // console.log(`[${getToken(vertex.id)}] Упс. Повтор`)

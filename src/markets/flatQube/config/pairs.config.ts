@@ -1,5 +1,5 @@
 import { bridge, indocoin, purr, qube, soon, usdt, wbtc, wever } from './config'
-import type { Pair } from '../../../config/types.config'
+import type { Pair } from '../../../config/types'
 
 export const qubeWever: Pair = {
     tokenA: qube,

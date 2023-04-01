@@ -1,18 +1,17 @@
-import { FlatQubeDex } from './markets/flatQube/index'
-import { CalculateResult, calculateTest, printResult } from './strategy/calculate'
+import { flatQubeDex } from './markets/flatQube/index'
+import { calculate, CalculateResult, printResult } from './strategy/arbitrage/calculate'
 
 async function main() {
     const time = new Date()
     console.log(`\n==== Started [${time.toLocaleTimeString()}] ====`)
-    dex1()
+    flatQube()
 }
 
-async function dex1() {
-    const flatQube = new FlatQubeDex()
-    const dexPrices = await flatQube.getPrices()
+async function flatQube() {
+    const prices = await flatQubeDex.prices()
     const goodPrices: CalculateResult[] = []
-    if (dexPrices) {
-        const result = calculateTest(dexPrices)
+    if (prices) {
+        const result = calculate(prices)
         if (result) {
             result.forEach(price => {
                 if (price.profit > 1) {
@@ -27,7 +26,7 @@ async function dex1() {
         }
     }
 
-    setTimeout(dex1, 2000)
+    setTimeout(flatQube, 2000)
 }
 
 main()

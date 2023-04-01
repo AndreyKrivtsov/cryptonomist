@@ -1,14 +1,14 @@
-import { Quote } from '../config/types.config'
+import { PairPrice } from '../../config/types'
 import { Graph } from './Graph'
 
-export function graphFabric(quotes: Quote[]) {
+export function graphFabric(prices: PairPrice[]) {
     const tokenGraph = new Graph()
-    quotes.forEach(quote => {
-        const tokenA = quote.pair.tokenA
-        const tokenB = quote.pair.tokenB
+    prices.forEach(price => {
+        const tokenA = price.pair.tokenA
+        const tokenB = price.pair.tokenB
         const newEdge = {
             id: tokenB.address,
-            weight: quote.price
+            weight: price.price
         }
 
         if (!tokenGraph.getNode(tokenA.address)) {
@@ -26,7 +26,7 @@ export function graphFabric(quotes: Quote[]) {
 
         const reverseNewEdge = {
             id: tokenA.address,
-            weight: 1 / quote.price
+            weight: 1 / price.price
         }
 
         if (!tokenGraph.getNode(tokenB.address)) {

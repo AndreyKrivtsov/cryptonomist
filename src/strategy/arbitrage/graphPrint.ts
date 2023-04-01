@@ -1,5 +1,5 @@
 import { Nodes } from './Graph'
-import { tokens } from '../dex1/config/tokens.config'
+import { tokens } from '../../markets/flatQube/config/tokens.config'
 
 export function graphPrint(graph: Nodes) {
     let result = ''
