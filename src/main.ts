@@ -1,5 +1,6 @@
 import { flatQubeDex } from './markets/flatQube/index'
-import { calculate, CalculateResult, printResult } from './strategy/arbitrage/calculate'
+import { Arbitrage, CalculateResult } from './strategy/arbitrage/Arbitrage'
+import { tokens } from './markets/flatQube/config/tokens.config'
 
 async function main() {
     const time = new Date()
@@ -8,10 +9,11 @@ async function main() {
 }
 
 async function flatQube() {
+    const arbitrage = new Arbitrage(flatQubeDex.pairsList())
     const prices = await flatQubeDex.prices()
     const goodPrices: CalculateResult[] = []
     if (prices) {
-        const result = calculate(prices)
+        const result = arbitrage.calculate(prices)
         if (result) {
             result.forEach(price => {
                 if (price.profit > 1) {
@@ -30,3 +32,18 @@ async function flatQube() {
 }
 
 main()
+
+function printResult(result: CalculateResult[]) {
+    const time = new Date()
+    let str = ''
+    result.forEach(path => {
+        str += `[${time.toLocaleTimeString()}] ${printPath(path.path).join(' - ')}, cost: ${path.profit}\n`
+    })
+    return str
+}
+
+function printPath(path: string[]) {
+    return path.map(id => {
+        return tokens.find(token => token.address === id)?.label
+    })
+}

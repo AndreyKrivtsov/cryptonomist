@@ -73,7 +73,11 @@ export class FlatQubeDex {
         }
     }
 
-    tokenList() {
+    pairsList() {
+        return this.pairs.list()
+    }
+
+    tokensList() {
         return this.tokens.list()
     }
 }
