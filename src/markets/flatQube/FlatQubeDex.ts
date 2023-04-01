@@ -1,42 +1,36 @@
-import { IExchange } from '../types'
 import { Account, ContractPackage } from '@eversdk/appkit'
-import { Pair, Quote, Token } from '../config/types.config'
+import { Pair, PairPrice } from '../../config/types'
 import { pairContract } from './contracts/pair.contract'
 import { client } from './client'
-import { pairs } from './config/pairs.config'
-import { tokens } from './config/tokens.config'
-
-type Response = {
-    pairAddress: string
-    expectedAmount: number
-    expectedFee: number
-    reverse: boolean
-}
+import { Pairs } from './Pairs'
+import { Tokens } from './Tokens'
+import { Response } from './config/types'
 
 const Contract: ContractPackage = {
     abi: pairContract.abi,
     tvc: pairContract.tvc
 }
 
-export class Dex1 implements IExchange {
-    _prices: string[]
-    _contract: ContractPackage
+export class FlatQubeDex {
+    contract: ContractPackage
+    private pairs: Pairs
+    private tokens: Tokens
 
-    constructor() {
-        this._prices = ['']
-        this._contract = Contract
+    constructor(pairs: Pairs, tokens: Tokens) {
+        this.pairs = pairs
+        this.tokens = tokens
+        this.contract = Contract
     }
 
-    async getPrices(): Promise<Quote[] | null> {
+    async prices(): Promise<PairPrice[] | null> {
+        const pairs = this.pairs.list()
         const promises: Promise<Response | null>[] = []
         const reversePromises: Promise<Response | null>[] = []
         pairs.forEach(pair => {
-            const amount = 10**pair.tokenA.decimal // 1 with decimals
             const promise = this.getExpectedChange(pair)
             promises.push(promise)
         })
         pairs.forEach(pair => {
-            const amount = 10**pair.tokenA.decimal // 1 with decimals
             const promise = this.getExpectedChange(pair, true)
             reversePromises.push(promise)
         })
@@ -55,7 +49,7 @@ export class Dex1 implements IExchange {
     }
 
     async getExpectedChange(pair: Pair, reverse: boolean = false): Promise<Response | null> {
-        const acc = new Account(this._contract, { address: pair.address, client })
+        const acc = new Account(this.contract, { address: pair.address, client })
         const params = {
             answerId: 0,
             amount: reverse ? 10**pair.tokenB.decimal : 10**pair.tokenA.decimal,
@@ -79,7 +73,11 @@ export class Dex1 implements IExchange {
         }
     }
 
-    tokenList() {
-        return tokens
+    pairsList() {
+        return this.pairs.list()
+    }
+
+    tokensList() {
+        return this.tokens.list()
     }
 }

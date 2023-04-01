@@ -42,6 +42,12 @@ export const purr: Token = {
     decimal: 18
 }
 
+export const indocoin: Token = {
+    label: 'indocoin',
+    address: '0:03a878cfcb5475bbdeed030f0f274e2281ab26258c156747703ce9a761bce969',
+    decimal: 2
+}
+
 export const tokens = [
     qube,
     wever,
@@ -49,5 +55,6 @@ export const tokens = [
     wbtc,
     soon,
     usdt,
-    purr
+    purr,
+    indocoin
 ]

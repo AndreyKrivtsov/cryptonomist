@@ -1,4 +1,4 @@
-export type Quote = {
+export type PairPrice = {
     pair: Pair,
     price: number,
     reversePrice: number

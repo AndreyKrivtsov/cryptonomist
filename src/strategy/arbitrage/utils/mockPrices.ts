@@ -21,7 +21,7 @@ const tokens = {
     }
 }
 
-export const mockQuotes = [
+export const mockPrices = [
     {
         pair: {
             tokenA: tokens.qube,

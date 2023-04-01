@@ -1,5 +1,5 @@
 export interface IExchange {
-    _prices: string[]
+    // _prices: string[]
 
     // getPrices(): string[]
 }
