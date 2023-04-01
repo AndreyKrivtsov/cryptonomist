@@ -1,5 +1,5 @@
-import { bridge, purr, qube, soon, usdt, wbtc, wever } from './config'
-import type { Pair } from '../../config/types.config'
+import { bridge, indocoin, purr, qube, soon, usdt, wbtc, wever } from './config'
+import type { Pair } from '../../../config/types.config'
 
 export const qubeWever: Pair = {
     tokenA: qube,
@@ -61,6 +61,18 @@ export const purrQube: Pair = {
     address: '0:57de338b99ff8ad8f1dabd75ddb920beb913a5328b8208b91f4b7047fe5874b6'
 }
 
+export const indocoinWever: Pair = {
+    tokenA: indocoin,
+    tokenB: wever,
+    address: '0:2710c6d4437ca37d5ac4d806940ed42076447239738f7a9c831ef1f7ef21e7af'
+}
+
+export const indocoinUsdt: Pair = {
+    tokenA: indocoin,
+    tokenB: usdt,
+    address: '0:1a243a8b8274059bd8f848f70ca6f87b264e7a570476fe940bf3274ded9ffe7d'
+}
+
 export const pairs = [
     qubeWever,
     qubeBridge,
@@ -71,5 +83,7 @@ export const pairs = [
     soonWever,
     soonUsdt,
     purrWever,
-    purrQube
+    purrQube,
+    indocoinWever,
+    indocoinUsdt
 ]

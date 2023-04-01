@@ -2,7 +2,7 @@ import { Quote } from '../config/types.config'
 import { graphFabric } from './graphFabric'
 import { Node, Nodes } from './Graph'
 import { graphPrint } from './graphPrint'
-import { tokens } from '../dex1/config/tokens.config'
+import { tokens } from '../markets/flatQube/config/tokens.config'
 
 export type CalculateResult = {
     path: string[],

@@ -1,6 +1,6 @@
-import { IExchange } from '../types'
+import { IExchange } from '../../types'
 import { Account, ContractPackage } from '@eversdk/appkit'
-import { Pair, Quote, Token } from '../config/types.config'
+import { Pair, Quote, Token } from '../../config/types.config'
 import { pairContract } from './contracts/pair.contract'
 import { client } from './client'
 import { pairs } from './config/pairs.config'
@@ -18,7 +18,7 @@ const Contract: ContractPackage = {
     tvc: pairContract.tvc
 }
 
-export class Dex1 implements IExchange {
+export class FlatQubeDex implements IExchange {
     _prices: string[]
     _contract: ContractPackage
 
