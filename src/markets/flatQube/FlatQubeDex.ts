@@ -1,17 +1,18 @@
 import { Account, ContractPackage } from '@eversdk/appkit'
-import { Pair, PairPrice } from '../../config/types'
+import { IExchange, Pair, PairPrice } from '../../config/types'
 import { pairContract } from './contracts/pair.contract'
 import { client } from './client'
 import { Pairs } from './Pairs'
 import { Tokens } from './Tokens'
 import { Response } from './config/types'
+import { CalculateResult } from '../../strategy/arbitrage/Arbitrage'
 
 const Contract: ContractPackage = {
     abi: pairContract.abi,
     tvc: pairContract.tvc
 }
 
-export class FlatQubeDex {
+export class FlatQubeDex implements IExchange {
     contract: ContractPackage
     private pairs: Pairs
     private tokens: Tokens
@@ -20,6 +21,10 @@ export class FlatQubeDex {
         this.pairs = pairs
         this.tokens = tokens
         this.contract = Contract
+    }
+
+    async price(tokens: string[]): Promise<CalculateResult | null> {
+        return null
     }
 
     async prices(): Promise<PairPrice[] | null> {

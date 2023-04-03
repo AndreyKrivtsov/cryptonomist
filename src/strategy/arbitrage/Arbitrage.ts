@@ -14,7 +14,12 @@ export class Arbitrage {
     constructor(pairs: Pair[]) {
         this.pairs = pairs
         this._graph = this.getGraph(pairs)
-        this._paths = this.dfs(this._graph, this._graph[Object.keys(this._graph)[1]])
+        const paths: string[][] = []
+        Object.keys(this._graph).forEach(node => {
+            const dfsResult = this.dfs(this._graph, this._graph[node])
+            paths.push(...dfsResult)
+        })
+        this._paths = paths
     }
 
     paths() {
