@@ -1,49 +1,61 @@
 import { flatQubeDex } from './markets/flatQube/index'
-import { Arbitrage, CalculateResult } from './strategy/arbitrage/Arbitrage'
-import { tokens } from './markets/flatQube/config/tokens.config'
+import { ArbGraph, CalculateResult } from './strategy/arbitrage/ArbGraph'
+import { pancakeDex } from './markets/pancake/index'
+import { log, printResult } from './utils'
 
 async function main() {
     const time = new Date()
-    console.log(`\n==== Started [${time.toLocaleTimeString()}] ====`)
-    flatQube()
+    log(`\n==== Started [${time.toLocaleTimeString()}] ====\n`)
+    pancake().then()
+    flatQube().then()
+}
+
+async function pancake() {
+    const profitNeed = 1
+    pancakeDex.requestLog()
+    const arbitrage = new ArbGraph(pancakeDex.pairsList())
+    const paths = arbitrage.paths()
+    const pricesPromises: Promise<CalculateResult | null>[] = []
+    const goodPrices: CalculateResult[] = []
+    paths.forEach(path => {
+        pricesPromises.push(pancakeDex.price(path))
+    })
+    const prices = await Promise.all(pricesPromises)
+    prices.forEach(price => {
+        if (price && price.profit > profitNeed) {
+            goodPrices.push(price)
+        }
+    })
+    goodPrices.forEach(price => console.log(printResult(price, pancakeDex.tokensList())))
+    if (!goodPrices.length) {
+        pancakeDex.responseLog()
+    }
+    setTimeout(pancake, 1000)
 }
 
 async function flatQube() {
-    const arbitrage = new Arbitrage(flatQubeDex.pairsList())
+    const profitNeed = 1
+    flatQubeDex.requestLog()
+    const arbGraph = new ArbGraph(flatQubeDex.pairsList())
     const prices = await flatQubeDex.prices()
     const goodPrices: CalculateResult[] = []
     if (prices) {
-        const result = arbitrage.calculate(prices)
+        const result = arbGraph.calculate(prices)
         if (result) {
             result.forEach(price => {
-                if (price.profit > 1) {
+                if (price.profit > profitNeed) {
                     goodPrices.push(price)
                 }
             })
-            if (goodPrices.length) {
-                console.log('\n', printResult(goodPrices))
-            } else {
-                process.stdout.write('.')
+            goodPrices.forEach(price => console.log(printResult(price, flatQubeDex.tokensList())))
+            if (!goodPrices.length) {
+                flatQubeDex.responseLog()
             }
         }
     }
 
-    setTimeout(flatQube, 2000)
+    setTimeout(await flatQube, 1000)
 }
 
 main()
 
-function printResult(result: CalculateResult[]) {
-    const time = new Date()
-    let str = ''
-    result.forEach(path => {
-        str += `[${time.toLocaleTimeString()}] ${printPath(path.path).join(' - ')}, cost: ${path.profit}\n`
-    })
-    return str
-}
-
-function printPath(path: string[]) {
-    return path.map(id => {
-        return tokens.find(token => token.address === id)?.label
-    })
-}

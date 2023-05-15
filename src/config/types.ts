@@ -1,3 +1,5 @@
+import { CalculateResult } from '../strategy/arbitrage/ArbGraph'
+
 export type PairPrice = {
     pair: Pair,
     price: number,
@@ -16,3 +18,9 @@ export type Token = {
     decimal: number
 }
 
+export interface IExchange {
+    price(tokens: string[]): Promise<CalculateResult | null>
+    prices(): Promise<PairPrice[] | null>
+    pairsList(): Pair[]
+    tokensList(): Token[]
+}

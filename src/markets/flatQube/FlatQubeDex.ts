@@ -1,25 +1,32 @@
 import { Account, ContractPackage } from '@eversdk/appkit'
-import { Pair, PairPrice } from '../../config/types'
+import { IExchange, Pair, PairPrice } from '../../config/types'
 import { pairContract } from './contracts/pair.contract'
 import { client } from './client'
 import { Pairs } from './Pairs'
 import { Tokens } from './Tokens'
 import { Response } from './config/types'
+import { CalculateResult } from '../../strategy/arbitrage/ArbGraph'
+import { randomId } from '../../utils'
 
 const Contract: ContractPackage = {
     abi: pairContract.abi,
     tvc: pairContract.tvc
 }
 
-export class FlatQubeDex {
+export class FlatQubeDex implements IExchange {
     contract: ContractPackage
     private pairs: Pairs
     private tokens: Tokens
+    private requestId: string = ''
 
     constructor(pairs: Pairs, tokens: Tokens) {
         this.pairs = pairs
         this.tokens = tokens
         this.contract = Contract
+    }
+
+    async price(tokens: string[]): Promise<CalculateResult | null> {
+        return null
     }
 
     async prices(): Promise<PairPrice[] | null> {
@@ -79,5 +86,20 @@ export class FlatQubeDex {
 
     tokensList() {
         return this.tokens.list()
+    }
+
+    requestLog() {
+        this.requestId = randomId()
+        this.log(this.requestId, false)
+    }
+
+    responseLog() {
+        this.log(this.requestId, true)
+        this.requestId = ''
+    }
+
+    log(id: string, dir: boolean) {
+        const date = new Date().toLocaleTimeString()
+        process.stdout.write(`[${date}][fq] ${dir ? '<' : '>'} ${id}\n`)
     }
 }

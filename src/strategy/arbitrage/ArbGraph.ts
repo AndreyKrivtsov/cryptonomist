@@ -1,12 +1,13 @@
 import { Pair, PairPrice } from '../../config/types'
 import { Graph, Nodes, Node } from './utils/Graph'
+import { graphPrint } from './utils/graphPrint'
 
 export type CalculateResult = {
     path: string[],
     profit: number
 }
 
-export class Arbitrage {
+export class ArbGraph {
     pairs: Pair[]
     _paths: string[][]
     _graph: Nodes
@@ -14,7 +15,13 @@ export class Arbitrage {
     constructor(pairs: Pair[]) {
         this.pairs = pairs
         this._graph = this.getGraph(pairs)
-        this._paths = this.dfs(this._graph, this._graph[Object.keys(this._graph)[1]])
+        // graphPrint(this._graph)
+        const paths: string[][] = []
+        Object.keys(this._graph).forEach(node => {
+            const dfsResult = this.dfs(this._graph, this._graph[node])
+            paths.push(...dfsResult)
+        })
+        this._paths = paths
     }
 
     paths() {

@@ -1,4 +1,4 @@
-import { Nodes } from './../Graph'
+import { Nodes } from './Graph'
 import { tokens } from '../../../markets/flatQube/config/tokens.config'
 
 export function graphPrint(graph: Nodes) {
