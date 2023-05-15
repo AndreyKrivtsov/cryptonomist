@@ -5,7 +5,8 @@ import { client } from './client'
 import { Pairs } from './Pairs'
 import { Tokens } from './Tokens'
 import { Response } from './config/types'
-import { CalculateResult } from '../../strategy/arbitrage/Arbitrage'
+import { CalculateResult } from '../../strategy/arbitrage/ArbGraph'
+import { randomId } from '../../utils'
 
 const Contract: ContractPackage = {
     abi: pairContract.abi,
@@ -16,6 +17,7 @@ export class FlatQubeDex implements IExchange {
     contract: ContractPackage
     private pairs: Pairs
     private tokens: Tokens
+    private requestId: string = ''
 
     constructor(pairs: Pairs, tokens: Tokens) {
         this.pairs = pairs
@@ -84,5 +86,20 @@ export class FlatQubeDex implements IExchange {
 
     tokensList() {
         return this.tokens.list()
+    }
+
+    requestLog() {
+        this.requestId = randomId()
+        this.log(this.requestId, false)
+    }
+
+    responseLog() {
+        this.log(this.requestId, true)
+        this.requestId = ''
+    }
+
+    log(id: string, dir: boolean) {
+        const date = new Date().toLocaleTimeString()
+        process.stdout.write(`[${date}][fq] ${dir ? '<' : '>'} ${id}\n`)
     }
 }

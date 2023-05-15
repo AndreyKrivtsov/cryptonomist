@@ -1,4 +1,4 @@
-import { CalculateResult } from '../strategy/arbitrage/Arbitrage'
+import { CalculateResult } from '../strategy/arbitrage/ArbGraph'
 
 export type PairPrice = {
     pair: Pair,

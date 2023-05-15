@@ -3,7 +3,8 @@ import { Contract, formatUnits, parseUnits } from 'ethers'
 import { provider } from './client'
 import { Pairs } from './Pairs'
 import { Tokens } from './Tokens'
-import { CalculateResult } from '../../strategy/arbitrage/Arbitrage'
+import { CalculateResult } from '../../strategy/arbitrage/ArbGraph'
+import { randomId } from '../../utils'
 
 const abi = [
     'function getAmountsOut(uint amountIn, address[] path) view returns (uint[] memory amounts)'
@@ -11,14 +12,13 @@ const abi = [
 
 
 export class PancakeDex implements IExchange {
-    // contract: ContractPackage
     private pairs: Pairs
     private tokens: Tokens
+    private requestId: string = ''
 
     constructor(pairs: Pairs, tokens: Tokens) {
         this.pairs = pairs
         this.tokens = tokens
-        // this.contract = Contract
     }
 
     async price(tokensPath: string[]): Promise<CalculateResult | null> {
@@ -53,5 +53,20 @@ export class PancakeDex implements IExchange {
 
     tokensList() {
         return this.tokens.list()
+    }
+
+    requestLog() {
+        this.requestId = randomId()
+        this.log(this.requestId, false)
+    }
+
+    responseLog() {
+        this.log(this.requestId, true)
+        this.requestId = ''
+    }
+
+    log(id: string, dir: boolean) {
+        const date = new Date().toLocaleTimeString()
+        process.stdout.write(`[${date}][cake] ${dir ? '<' : '>'} ${id}\n`)
     }
 }
